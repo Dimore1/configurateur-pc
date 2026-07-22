@@ -45,4 +45,4 @@ db.add_all(cpus + motherboards + rams + gpus + cases + psus)
 db.commit()
 db.close()
 
-print("Données de test insérées.")  
+print("Données de test insérées.") 
