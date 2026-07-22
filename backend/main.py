@@ -5,6 +5,8 @@ from models import Cpu, Motherboard, Ram, Gpu, Case, Psu
 from compatibility import check_build
 from fastapi import FastAPI, HTTPException
 from database import SessionLocal
+from sqlalchemy import text
+from database import engine
 
 
 app = FastAPI(title="Configurateur PC FR - API")
@@ -20,16 +22,12 @@ app.add_middleware(
 def health():
     return {"status": "ok"}
 
-from sqlalchemy import text
-from database import engine
 
 @app.get("/db-check")
 def db_check():
     with engine.connect() as connection:
         result = connection.execute(text("SELECT 1"))
         return {"db_status": "ok", "result": result.scalar()}
-
-
 
 class BuildRequest(BaseModel):
     cpu_id: int
