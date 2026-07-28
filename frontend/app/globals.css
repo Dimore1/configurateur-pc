@@ -24,3 +24,47 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 3rem;
+  background-color: #f8fafc;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.cpu-list {
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cpu-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.cpu-name {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.cpu-brand {
+  font-size: 0.875rem;
+  color: #64748b;
+}
