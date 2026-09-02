@@ -22,12 +22,12 @@ function Field({
   placeholder: string;
 }) {
   return (
-    <label className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-slate-600">{label}</span>
+    <label className="field">
+      <span className="field-label">{label}</span>
       <select
         value={value || ""}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-900 shadow-sm transition-colors hover:border-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
+        className="field-select"
       >
         <option value="0">{placeholder}</option>
         {options.map((opt) => (
@@ -78,19 +78,33 @@ export default function Home() {
     case_id: 0,
   });
 
+  const [result, setResult] = useState<{ compatible: boolean; issues: string[] } | null>(null);
+
   const handleChange = (field: string, value: string) => {
     setConfig({ ...config, [field]: Number(value) });
   };
 
+  const handleCheck = async () => {
+    const res = await fetch("http://localhost:8000/check-compatibility", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(config),
+    });
+    const data = await res.json();
+    setResult(data);
+
+
+  }
+
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col items-center gap-10 px-6 py-16">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-slate-900">Configurateur PC FR</h1>
-        <p className="mt-2 text-slate-500">Choisis tes composants pour construire ta configuration</p>
+    <main className="page">
+      <div className="header">
+        <h1 className="title">Configurateur PC FR</h1>
+        <p className="description">Choisis tes composants pour construire ta configuration</p>
       </div>
 
-      <div className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="card">
+        <div className="field-grid">
           <Field
             label="Processeur (CPU)"
             value={config.cpu_id}
@@ -133,8 +147,15 @@ export default function Home() {
             options={cases}
             placeholder="Sélectionnez un boîtier"
           />
-        </div>
+        </div> 
       </div>
+      <button type="button" className="compatibility-button" onClick={handleCheck}>
+          Vérifier la config
+      </button>
     </main>
   );
+
+
+
+
 }
