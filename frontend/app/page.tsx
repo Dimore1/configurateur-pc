@@ -14,12 +14,14 @@ function Field({
   onChange,
   options,
   placeholder,
+  isOptionDisabled = () => false
 }: {
   label: string;
   value: number;
   onChange: (value: string) => void;
   options: Component[];
   placeholder: string;
+  isOptionDisabled? :  (option: Component) => boolean
 }) {
   return (
     <label className="field">
@@ -92,9 +94,18 @@ export default function Home() {
     });
     const data = await res.json();
     setResult(data);
-
-
   }
+
+  const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
+
+  const isMotherboardDisabled = (motherboard : Component) => {
+      if (selectedCpu === undefined){
+        return false
+      }
+
+      return motherboard.socket !== selectedCpu.socket
+  }
+
 
   return (
     <main className="page">
@@ -149,9 +160,6 @@ export default function Home() {
           />
         </div> 
       </div>
-      <button type="button" className="compatibility-button" onClick={handleCheck}>
-          Vérifier la config
-      </button>
     </main>
   );
 
