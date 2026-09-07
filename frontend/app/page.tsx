@@ -33,7 +33,7 @@ function Field({
       >
         <option value="0">{placeholder}</option>
         {options.map((opt) => (
-          <option key={opt.id} value={opt.id}>
+          <option key={opt.id} value={opt.id} disabled={isOptionDisabled(opt)}>
             {opt.name}
           </option>
         ))}
@@ -129,6 +129,7 @@ export default function Home() {
             onChange={(v) => handleChange("motherboard_id", v)}
             options={motherboards}
             placeholder="Sélectionnez une carte mère"
+            isOptionDisabled={isMotherboardDisabled}
           />
           <Field
             label="Mémoire (RAM)"
