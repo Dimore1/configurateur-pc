@@ -96,14 +96,27 @@ export default function Home() {
     setResult(data);
   }
 
+  
+  const socketCompare = (a : Component, b : Component) => {
+    return a.socket !== b.socket;
+
+  }
+
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
+  const selectedMb = motherboards.find((motherboard) => motherboard.id === config.motherboard_id);
 
   const isMotherboardDisabled = (motherboard : Component) => {
       if (selectedCpu === undefined){
-        return false
+        return false;
       }
+      return socketCompare(motherboard,selectedCpu);
+  }
 
-      return motherboard.socket !== selectedCpu.socket
+  const isCpuDisabled = (cpu : Component) => {
+      if (selectedMb === undefined){
+        return false;
+      }
+      return socketCompare(cpu, selectedMb);
   }
 
 
@@ -122,6 +135,7 @@ export default function Home() {
             onChange={(v) => handleChange("cpu_id", v)}
             options={cpus}
             placeholder="Sélectionnez un CPU"
+            isOptionDisabled={isCpuDisabled}
           />
           <Field
             label="Carte mère"
