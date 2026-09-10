@@ -99,15 +99,22 @@ export default function Home() {
   
   const socketCompare = (a : Component, b : Component) => {
     return a.socket !== b.socket;
+  }
 
+  const typeCompare = (mb : Component, ram : Component) => {
+    return mb.type !== ram.ram_type;
   }
 
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
   const selectedMb = motherboards.find((motherboard) => motherboard.id === config.motherboard_id);
+  const selectedRam = rams.find((ram) => ram.id === config.ram_id)
 
   const isMotherboardDisabled = (motherboard : Component) => {
       if (selectedCpu === undefined){
-        return false;
+        if(selectedRam === undefined){
+          return false;
+        }
+        return typeCompare(selectedRam, motherboard);
       }
       return socketCompare(motherboard,selectedCpu);
   }
@@ -117,6 +124,13 @@ export default function Home() {
         return false;
       }
       return socketCompare(cpu, selectedMb);
+  }
+
+  const isRamDisabled = (ram : Component) => {
+    if (selectedMb === undefined){
+      return false;
+    }
+    return typeCompare(ram, selectedMb);
   }
 
 
@@ -150,7 +164,8 @@ export default function Home() {
             value={config.ram_id}
             onChange={(v) => handleChange("ram_id", v)}
             options={rams}
-            placeholder="Sélectionnez une RAM"
+            placeholder="Sélectionnez un kit de RAM"
+            isOptionDisabled={isRamDisabled}
           />
           <Field
             label="Carte graphique (GPU)"
