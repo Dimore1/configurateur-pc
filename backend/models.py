@@ -18,7 +18,7 @@ class Motherboard(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     socket = Column(String, nullable=False)  # doit correspondre au CPU
-    ram_type = Column(String, nullable=False)  # "DDR4" ou "DDR5"
+    ram_type = Column(String, nullable=False)  # "DDR4" ou "DDR5 ou DDR4,DDR5"
     format = Column(String, nullable=False)  # "ATX", "mATX", "ITX"
     max_ram_slots = Column(Integer)
 

@@ -105,18 +105,24 @@ export default function Home() {
     return !(mb.ram_type as string).split(",").includes(ram.type as string);
   }
 
+  const unequalFormat = (mb: Component, pc_case : Component) => {
+    return !(pc_case.supported_formats as string).split(",").includes(mb.format as string);
+  }
+
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
   const selectedMb = motherboards.find((motherboard) => motherboard.id === config.motherboard_id);
-  const selectedRam = rams.find((ram) => ram.id === config.ram_id)
+  const selectedRam = rams.find((ram) => ram.id === config.ram_id);
+  const selectedCase = cases.find((pc_case) => pc_case.id === config.case_id);
 
   const isMotherboardDisabled = (motherboard : Component) => {
-      if (selectedCpu === undefined){
-        if(selectedRam === undefined){
-          return false;
+      for(let couple of [[selectedCpu,unequalSocket], [selectedRam,unequalRamType], [selectedCase, unequalFormat]]){
+        let component = couple[0] as Component;
+        const fn = couple[1] as (a: Component, b: Component) => boolean;
+        if(component !== undefined && fn(motherboard,component)){
+          return true;
         }
-        return unequalRamType(motherboard, selectedRam);
       }
-      return unequalSocket(motherboard,selectedCpu);
+      return false;
   }
 
   const isCpuDisabled = (cpu : Component) => {
@@ -131,6 +137,13 @@ export default function Home() {
       return false;
     }
     return unequalRamType(selectedMb, ram);
+  }
+
+  const isCaseDisabled = (pc_case: Component) => {
+    if (selectedMb === undefined){
+      return false;
+    }
+    return unequalFormat(selectedMb, pc_case);
   }
 
 
@@ -187,6 +200,7 @@ export default function Home() {
             onChange={(v) => handleChange("case_id", v)}
             options={cases}
             placeholder="Sélectionnez un boîtier"
+            isOptionDisabled={isCaseDisabled}
           />
         </div> 
       </div>
