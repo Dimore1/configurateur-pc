@@ -97,12 +97,12 @@ export default function Home() {
   }
 
   
-  const socketCompare = (a : Component, b : Component) => {
+  const unequalSocket = (a : Component, b : Component) => {
     return a.socket !== b.socket;
   }
 
-  const typeCompare = (mb : Component, ram : Component) => {
-    return (mb.ram_type as string).split(",").includes(ram.type as string);
+  const unequalRamType = (mb : Component, ram : Component) => {
+    return !(mb.ram_type as string).split(",").includes(ram.type as string);
   }
 
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
@@ -114,23 +114,23 @@ export default function Home() {
         if(selectedRam === undefined){
           return false;
         }
-        return !typeCompare(motherboard, selectedRam);
+        return unequalRamType(motherboard, selectedRam);
       }
-      return socketCompare(motherboard,selectedCpu);
+      return unequalSocket(motherboard,selectedCpu);
   }
 
   const isCpuDisabled = (cpu : Component) => {
       if (selectedMb === undefined){
         return false;
       }
-      return socketCompare(cpu, selectedMb);
+      return unequalSocket(cpu, selectedMb);
   }
 
   const isRamDisabled = (ram : Component) => {
     if (selectedMb === undefined){
       return false;
     }
-    return typeCompare(selectedMb, ram);
+    return unequalRamType(selectedMb, ram);
   }
 
 
