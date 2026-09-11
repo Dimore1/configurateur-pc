@@ -102,7 +102,7 @@ export default function Home() {
   }
 
   const typeCompare = (mb : Component, ram : Component) => {
-    return mb.type !== ram.ram_type;
+    return (mb.ram_type as string).split(",").includes(ram.type as string);
   }
 
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
@@ -114,7 +114,7 @@ export default function Home() {
         if(selectedRam === undefined){
           return false;
         }
-        return typeCompare(selectedRam, motherboard);
+        return !typeCompare(motherboard, selectedRam);
       }
       return socketCompare(motherboard,selectedCpu);
   }
@@ -130,7 +130,7 @@ export default function Home() {
     if (selectedMb === undefined){
       return false;
     }
-    return typeCompare(ram, selectedMb);
+    return typeCompare(selectedMb, ram);
   }
 
 
