@@ -27,6 +27,7 @@ gpus = [
     Gpu(name="RTX 4060", length_mm=200, tdp=115),
     Gpu(name="RTX 4070", length_mm=240, tdp=200),
     Gpu(name="RX 7600", length_mm=260, tdp=165),
+    Gpu(name="RTX 5090", length_mm=340, tdp=575)
 ]
 
 cases = [

@@ -109,10 +109,15 @@ export default function Home() {
     return !(pc_case.supported_formats as string).split(",").includes(mb.format as string);
   }
 
+  const aGpuTooLong = (gpu: Component, pc_case: Component) => {
+    return (gpu.length_mm as number) > (pc_case.max_gpu_length_mm as number);
+  }
+
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
   const selectedMb = motherboards.find((motherboard) => motherboard.id === config.motherboard_id);
   const selectedRam = rams.find((ram) => ram.id === config.ram_id);
   const selectedCase = cases.find((pc_case) => pc_case.id === config.case_id);
+  const selectedGpu = gpus.find((gpu) => gpu.id === config.gpu_id);
 
   const isMotherboardDisabled = (motherboard : Component) => {
       for(let couple of [[selectedCpu,unequalSocket], [selectedRam,unequalRamType], [selectedCase, unequalFormat]]){
@@ -140,10 +145,22 @@ export default function Home() {
   }
 
   const isCaseDisabled = (pc_case: Component) => {
-    if (selectedMb === undefined){
+    for(let couple of [[selectedMb, unequalFormat], [selectedGpu, aGpuTooLong]]){
+        let component = couple[0] as Component;
+        const fn = couple[1] as (a: Component, b: Component) => boolean;
+        if(component !== undefined && fn(component,pc_case)){
+          return true;
+        }
+    }
+    return false;
+  }
+  
+
+  const isGpuDisabled = (gpu: Component) => {
+    if (selectedCase === undefined){
       return false;
     }
-    return unequalFormat(selectedMb, pc_case);
+    return aGpuTooLong(gpu,selectedCase);
   }
 
 
@@ -186,6 +203,7 @@ export default function Home() {
             onChange={(v) => handleChange("gpu_id", v)}
             options={gpus}
             placeholder="Sélectionnez une GPU"
+            isOptionDisabled={isGpuDisabled}
           />
           <Field
             label="Alimentation (PSU)"
