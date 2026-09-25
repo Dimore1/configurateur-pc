@@ -174,14 +174,39 @@ export default function Home() {
     if (selectedPsu !== undefined && selectedCpu !== undefined && notEnoughWattage(selectedPsu, selectedCpu, gpu)) {
       return true;
     }
+
+    if(selectedPsu !== undefined && cpus.length != 0){
+      if(cpus.every((cpu)=> (notEnoughWattage(selectedPsu,cpu,gpu)))){
+        return true;
+      }
+    }
     return false;
   }
 
   const isPsuDisabled = (psu: Component) => {
-    if (selectedCpu === undefined || selectedGpu === undefined) {
-      return false;
+    // cas 1 : CPU et GPU déjà choisis -> check direct
+    if (selectedCpu !== undefined && selectedGpu !== undefined) {
+      return notEnoughWattage(psu, selectedCpu, selectedGpu);
     }
-    return notEnoughWattage(psu, selectedCpu, selectedGpu);
+
+    // cas 2 : seul le GPU est choisi -> ce PSU marcherait-il avec AU MOINS UN cpu du catalogue ?
+    if (selectedGpu !== undefined) {
+      if (cpus.length === 0) {
+        return false;
+      }
+      return cpus.every((cpu) => notEnoughWattage(psu, cpu, selectedGpu));
+    }
+
+    // cas 3 : seul le CPU est choisi -> ce PSU marcherait-il avec AU MOINS UN gpu du catalogue ?
+    if (selectedCpu !== undefined) {
+      if (gpus.length === 0) {
+        return false;
+      }
+      return gpus.every((gpu) => notEnoughWattage(psu, selectedCpu, gpu));
+    }
+
+    
+    return false;
   }
 
 
