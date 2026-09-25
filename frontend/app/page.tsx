@@ -96,7 +96,7 @@ export default function Home() {
     setResult(data);
   }
 
-  
+
   const unequalSocket = (a : Component, b : Component) => {
     return a.socket !== b.socket;
   }
@@ -113,11 +113,19 @@ export default function Home() {
     return (gpu.length_mm as number) > (pc_case.max_gpu_length_mm as number);
   }
 
+  const PSU_MARGIN = 150;
+
+  const notEnoughWattage = (psu: Component, cpu: Component, gpu: Component) => {
+    const needed = (cpu.tdp as number) + (gpu.tdp as number) + PSU_MARGIN;
+    return (psu.wattage as number) < needed;
+  }
+
   const selectedCpu = cpus.find((cpu) => cpu.id === config.cpu_id);
   const selectedMb = motherboards.find((motherboard) => motherboard.id === config.motherboard_id);
   const selectedRam = rams.find((ram) => ram.id === config.ram_id);
   const selectedCase = cases.find((pc_case) => pc_case.id === config.case_id);
   const selectedGpu = gpus.find((gpu) => gpu.id === config.gpu_id);
+  const selectedPsu = psus.find((psu) => psu.id === config.psu_id);
 
   const isMotherboardDisabled = (motherboard : Component) => {
       for(let couple of [[selectedCpu,unequalSocket], [selectedRam,unequalRamType], [selectedCase, unequalFormat]]){
@@ -131,10 +139,13 @@ export default function Home() {
   }
 
   const isCpuDisabled = (cpu : Component) => {
-      if (selectedMb === undefined){
-        return false;
+      if (selectedMb !== undefined && unequalSocket(cpu, selectedMb)) {
+        return true;
       }
-      return unequalSocket(cpu, selectedMb);
+      if (selectedPsu !== undefined && selectedGpu !== undefined && notEnoughWattage(selectedPsu, cpu, selectedGpu)) {
+        return true;
+      }
+      return false;
   }
 
   const isRamDisabled = (ram : Component) => {
@@ -154,13 +165,23 @@ export default function Home() {
     }
     return false;
   }
-  
+
 
   const isGpuDisabled = (gpu: Component) => {
-    if (selectedCase === undefined){
+    if (selectedCase !== undefined && aGpuTooLong(gpu, selectedCase)) {
+      return true;
+    }
+    if (selectedPsu !== undefined && selectedCpu !== undefined && notEnoughWattage(selectedPsu, selectedCpu, gpu)) {
+      return true;
+    }
+    return false;
+  }
+
+  const isPsuDisabled = (psu: Component) => {
+    if (selectedCpu === undefined || selectedGpu === undefined) {
       return false;
     }
-    return aGpuTooLong(gpu,selectedCase);
+    return notEnoughWattage(psu, selectedCpu, selectedGpu);
   }
 
 
@@ -211,6 +232,7 @@ export default function Home() {
             onChange={(v) => handleChange("psu_id", v)}
             options={psus}
             placeholder="Sélectionnez un PSU"
+            isOptionDisabled={isPsuDisabled}
           />
           <Field
             label="Boîtier"
@@ -220,7 +242,7 @@ export default function Home() {
             placeholder="Sélectionnez un boîtier"
             isOptionDisabled={isCaseDisabled}
           />
-        </div> 
+        </div>
       </div>
     </main>
   );
