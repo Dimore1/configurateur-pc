@@ -205,9 +205,22 @@ export default function Home() {
       return gpus.every((gpu) => notEnoughWattage(psu, selectedCpu, gpu));
     }
 
-    
+
     return false;
   }
+
+  const warningSources = [
+    { label: "CPU", list: cpus, isDisabled: isCpuDisabled },
+    { label: "carte mère", list: motherboards, isDisabled: isMotherboardDisabled },
+    { label: "RAM", list: rams, isDisabled: isRamDisabled },
+    { label: "GPU", list: gpus, isDisabled: isGpuDisabled },
+    { label: "alimentation (PSU)", list: psus, isDisabled: isPsuDisabled },
+    { label: "boîtier", list: cases, isDisabled: isCaseDisabled },
+  ];
+
+  const warnings = warningSources
+    .filter(({ list, isDisabled }) => list.length > 0 && list.every(isDisabled))
+    .map(({ label }) => `Aucune option de type "${label}" n'est compatible avec ta configuration actuelle.`);
 
 
   return (
@@ -216,6 +229,14 @@ export default function Home() {
         <h1 className="title">Configurateur PC FR</h1>
         <p className="description">Choisis tes composants pour construire ta configuration</p>
       </div>
+
+      {warnings.length > 0 && (
+        <div className="warnings">
+          {warnings.map((message, i) => (
+            <p key={i} className="warning">{message}</p>
+          ))}
+        </div>
+      )}
 
       <div className="card">
         <div className="field-grid">
