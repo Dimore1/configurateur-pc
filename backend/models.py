@@ -10,6 +10,8 @@ class Cpu(Base):
     brand = Column(String)
     socket = Column(String, nullable=False)  # ex: "AM5", "LGA1700"
     tdp = Column(Integer)  # consommation en watts
+    price = Column(Float)  # prix en euros
+    image_url = Column(String)
 
 
 class Motherboard(Base):
@@ -21,6 +23,8 @@ class Motherboard(Base):
     ram_type = Column(String, nullable=False)  # "DDR4" ou "DDR5 ou DDR4,DDR5"
     format = Column(String, nullable=False)  # "ATX", "mATX", "ITX"
     max_ram_slots = Column(Integer)
+    price = Column(Float)
+    image_url = Column(String)
 
 
 class Ram(Base):
@@ -31,6 +35,8 @@ class Ram(Base):
     type = Column(String, nullable=False)  # "DDR4" ou "DDR5"
     capacity_gb = Column(Integer)
     speed_mhz = Column(Integer)
+    price = Column(Float)
+    image_url = Column(String)
 
 
 class Gpu(Base):
@@ -40,6 +46,8 @@ class Gpu(Base):
     name = Column(String, nullable=False)
     length_mm = Column(Integer)  # longueur physique de la carte
     tdp = Column(Integer)
+    price = Column(Float)
+    image_url = Column(String)
 
 
 class Case(Base):
@@ -49,6 +57,8 @@ class Case(Base):
     name = Column(String, nullable=False)
     supported_formats = Column(String)  # ex: "ATX,mATX,ITX"
     max_gpu_length_mm = Column(Integer)
+    price = Column(Float)
+    image_url = Column(String)
 
 
 class Psu(Base):
@@ -57,3 +67,5 @@ class Psu(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     wattage = Column(Integer, nullable=False)
+    price = Column(Float)
+    image_url = Column(String)
