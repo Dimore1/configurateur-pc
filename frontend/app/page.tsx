@@ -258,6 +258,7 @@ export default function Home() {
         </div>
       )}
 
+      <div className="layout">
       <div className="card">
         <div className="field-grid">
           <Field
@@ -311,14 +312,23 @@ export default function Home() {
         </div> 
       </div>
 
-      <div className = "map">
-        {trulySelectedComponents.map(({ label, component }) => (
-            <div key={label}>
-              <p>{component.price as number} € </p>
-              <img src={component.image_url as string} alt={component.name as string}/>
-            </div>
-          ))}
+      <div className="map">
+        <div className="map-items">
+          {selectedComponents.map(({ label, component }) => (
+              <div key={label} className="map-item">
+                {component !== undefined ? (
+                  <>
+                    <p className="map-item-price">{component.price as number} €</p>
+                    <img src={component.image_url as string} alt={component.name as string} className="map-item-image"/>
+                  </>
+                ) : (
+                  <p className="map-item-empty">{label}</p>
+                )}
+              </div>
+            ))}
+        </div>
         <p className="total">Total : {totalPrice} €</p>
+      </div>
       </div>
     
     </main>
