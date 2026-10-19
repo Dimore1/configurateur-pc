@@ -127,6 +127,21 @@ export default function Home() {
   const selectedGpu = gpus.find((gpu) => gpu.id === config.gpu_id);
   const selectedPsu = psus.find((psu) => psu.id === config.psu_id);
 
+  const selectedComponents = [
+    { label: "CPU", component: selectedCpu },
+    { label: "carte mère", component: selectedMb },
+    { label: "RAM", component: selectedRam },
+    { label: "boîtier", component: selectedCase },
+    { label: "GPU", component: selectedGpu },
+    { label: "alimentation (PSU)", component: selectedPsu },
+  ];
+  const trulySelectedComponents = selectedComponents.filter(
+    ({ component }) => component !== undefined
+  ) as { label: string; component: Component }[];
+
+
+
+
   const isMotherboardDisabled = (motherboard : Component) => {
       for(let couple of [[selectedCpu,unequalSocket], [selectedRam,unequalRamType], [selectedCase, unequalFormat]]){
         let component = couple[0] as Component;
@@ -288,8 +303,18 @@ export default function Home() {
             placeholder="Sélectionnez un boîtier"
             isOptionDisabled={isCaseDisabled}
           />
-        </div>
+        </div> 
       </div>
+
+      <div className = "map">
+        {trulySelectedComponents.map(({ label, component }) => (
+            <div key={label}>
+              <p>{component.price as number} € </p>
+              <img src={component.image_url as string} alt={component.name as string}/>
+            </div>
+          ))}
+      </div>
+    
     </main>
   );
 
