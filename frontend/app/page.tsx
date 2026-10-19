@@ -139,6 +139,11 @@ export default function Home() {
     ({ component }) => component !== undefined
   ) as { label: string; component: Component }[];
 
+  const totalPrice = trulySelectedComponents.reduce(
+    (sum, { component }) => sum + (component.price as number),
+    0
+  );
+
 
 
 
@@ -313,6 +318,7 @@ export default function Home() {
               <img src={component.image_url as string} alt={component.name as string}/>
             </div>
           ))}
+        <p className="total">Total : {totalPrice} €</p>
       </div>
     
     </main>
