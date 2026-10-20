@@ -128,16 +128,16 @@ export default function Home() {
   const selectedPsu = psus.find((psu) => psu.id === config.psu_id);
 
   const selectedComponents = [
-    { label: "CPU", component: selectedCpu },
-    { label: "carte mère", component: selectedMb },
-    { label: "RAM", component: selectedRam },
-    { label: "boîtier", component: selectedCase },
-    { label: "GPU", component: selectedGpu },
-    { label: "alimentation (PSU)", component: selectedPsu },
+    { slug: "cpu", label: "CPU", component: selectedCpu },
+    { slug: "mb", label: "carte mère", component: selectedMb },
+    { slug: "ram", label: "RAM", component: selectedRam },
+    { slug: "case", label: "boîtier", component: selectedCase },
+    { slug: "gpu", label: "GPU", component: selectedGpu },
+    { slug: "psu", label: "alimentation (PSU)", component: selectedPsu },
   ];
   const trulySelectedComponents = selectedComponents.filter(
     ({ component }) => component !== undefined
-  ) as { label: string; component: Component }[];
+  ) as { slug: string; label: string; component: Component }[];
 
   const totalPrice = trulySelectedComponents.reduce(
     (sum, { component }) => sum + (component.price as number),
@@ -313,19 +313,29 @@ export default function Home() {
       </div>
 
       <div className="map">
-        <div className="map-items">
-          {selectedComponents.map(({ label, component }) => (
-              <div key={label} className="map-item">
-                {component !== undefined ? (
-                  <>
-                    <p className="map-item-price">{component.price as number} €</p>
-                    <img src={component.image_url as string} alt={component.name as string} className="map-item-image"/>
-                  </>
-                ) : (
-                  <p className="map-item-empty">{label}</p>
-                )}
-              </div>
-            ))}
+        <div className="map-diagram">
+          <svg className="map-connectors" viewBox="0 0 590 610" preserveAspectRatio="none">
+            <path d="M 295 100 L 295 120 L 310 120 L 310 150 L 295 150 L 295 170" className="connector connector-case" />
+            <path d="M 220 220 L 205 220 L 193 232 L 177 232 L 165 220 L 150 220" className="connector connector-psu" />
+            <path d="M 370 220 L 385 220 L 397 208 L 413 208 L 425 220 L 440 220" className="connector connector-ram" />
+            <path d="M 295 270 L 295 290 L 280 290 L 280 320 L 295 320 L 295 340" className="connector connector-cpu" />
+            <path d="M 295 440 L 295 460 L 310 460 L 310 490 L 295 490 L 295 510" className="connector connector-gpu" />
+          </svg>
+
+          <div className="map-items">
+            {selectedComponents.map(({ slug, label, component }) => (
+                <div key={slug} className={`map-item map-item-${slug}`}>
+                  {component !== undefined ? (
+                    <>
+                      <p className="map-item-price">{component.price as number} €</p>
+                      <img src={component.image_url as string} alt={component.name as string} className="map-item-image"/>
+                    </>
+                  ) : (
+                    <p className="map-item-empty">{label}</p>
+                  )}
+                </div>
+              ))}
+          </div>
         </div>
         <p className="total">Total : {totalPrice} €</p>
       </div>
